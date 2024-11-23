@@ -1,0 +1,38 @@
+import heapq
+
+class Graph:
+    def __init__(self):
+        self.graph = {}
+
+    def add_edge(self, start, end, cost=1):
+        self.graph.setdefault(start, []).append((end, cost))
+
+    def best_first_search(self, start, goal, heuristic):
+        pq = [(heuristic[start], start, [start], 0)]
+        visited = set()
+        while pq:
+            _, current_node, path, current_cost = heapq.heappop(pq)
+            if current_node == goal:
+                return path, current_cost
+            visited.add(current_node)
+            for neighbor, cost in self.graph.get(current_node, []):
+                if neighbor not in visited:
+                    heapq.heappush(pq, (heuristic[neighbor], neighbor, path + [neighbor], current_cost + cost))
+        return None, float('inf')
+
+graph = Graph()
+for _ in range(int(input("Enter number of edges: "))):
+    start, end, cost = input("Enter edge (start end cost): ").split()
+    graph.add_edge(start, end, int(cost))
+
+heuristic = {node: int(h_value) for node, h_value in (input("Enter node and heuristic value: ").split() for _ in range(int(input("Enter number of nodes for heuristic values: "))))}
+
+start_node = input("Enter start node: ")
+goal_node = input("Enter goal node: ")
+
+path, total_cost = graph.best_first_search(start_node, goal_node, heuristic)
+if path:
+    print("Path found:", ' -> '.join(path))
+    print("Total cost:", total_cost)
+else:
+    print(f"No path found from {start_node} to {goal_node}.")

@@ -1,0 +1,31 @@
+graph = {}
+visited = set()
+
+def addedge(x, y):
+    if x not in graph:
+        graph[x] = [y]
+    else:
+        graph[x].append(y)
+    if y not in graph:
+        graph[y] = [x]
+    else:
+        graph[y].append(x)
+
+def dfs(visited, graph, start):
+    if start not in visited:
+        print(start, end=" ")
+        visited.add(start)
+        for i in graph[start]:
+            dfs(visited, graph, i)
+
+def main():
+    num_edges = int(input("Enter the number of edges: "))
+    for _ in range(num_edges):
+        x, y = map(int, input("Enter edge (x y): ").split())
+        addedge(x, y)
+    
+    start_node = int(input("Enter the start node: "))
+    dfs(visited, graph, start_node)
+
+if __name__ == "__main__":
+    main()
